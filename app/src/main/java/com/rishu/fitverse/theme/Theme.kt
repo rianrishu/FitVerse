@@ -1,4 +1,4 @@
-package com.rishu.fitverse.ui.theme
+package com.rishu.fitverse.theme
 
 import android.app.Activity
 import android.os.Build

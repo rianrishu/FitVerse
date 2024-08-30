@@ -1,4 +1,4 @@
-package com.rishu.fitverse.ui.theme
+package com.rishu.fitverse.theme
 
 import androidx.compose.ui.graphics.Color
 
