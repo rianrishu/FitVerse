@@ -5,6 +5,9 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+apply plugin: 'com.google.gms.google-services'
+
+
 android {
     namespace 'com.rishu.fitverse'
     compileSdk 34
@@ -107,6 +110,9 @@ dependencies {
 
     //okHttp
     implementation libs.logging.interceptor
+
+    //Google Play Services
+    implementation libs.play.services.auth
 
 
 }
