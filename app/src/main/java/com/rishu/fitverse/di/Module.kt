@@ -8,7 +8,12 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.rishu.fitverse.BuildConfig
+import com.rishu.fitverse.data.api.local.datasource.DataStorePreferencesDataSource
+import com.rishu.fitverse.data.api.local.datasource.PreferencesDataSource
+import com.rishu.fitverse.data.api.local.datasource.SharedPreferencesDataSource
+import com.rishu.fitverse.data.api.remote.harperdb.Api
 import com.rishu.fitverse.data.api.remote.harperdb.AuthInterceptor
+import com.rishu.fitverse.data.model.mapper.UserMapper
 import com.rishu.fitverse.utils.dataStore
 import dagger.Module
 import dagger.Provides
@@ -21,11 +26,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
-class Module {
+@Module
+object Module {
 
     @Provides
     @Singleton
@@ -47,11 +53,27 @@ class Module {
 
     @Provides
     @Singleton
+    @Named("sharedPref")
+    fun providesSharedPreferencesDataSource(sharedPreferences: SharedPreferences): PreferencesDataSource =
+        SharedPreferencesDataSource(sharedPreferences)
+
+    @Provides
+    @Singleton
+    @Named("prefDataStore")
+    fun providesDataStorePreferencesDataSource(dataStore: DataStore<Preferences>): PreferencesDataSource =
+        DataStorePreferencesDataSource(dataStore)
+
+    @Provides
+    @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor() = AuthInterceptor()
 
     @Provides
     @Singleton
@@ -77,6 +99,14 @@ class Module {
         .callFactory(callFactory)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
+
+    @Provides
+    @Singleton
+    fun providesApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+
+    @Provides
+    @Singleton
+    fun providesUserMapper(): UserMapper = UserMapper()
 
     @Provides
     fun providesContext(@ApplicationContext context: Context): Context = context
