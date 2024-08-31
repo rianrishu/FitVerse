@@ -3,6 +3,7 @@ agp = "8.5.1"
 androidxLifecycleRuntimeKtx = "2.3.1"
 datastorePreferences = "1.1.1"
 firebaseBom = "33.2.0"
+firebaseCrashlyticsGradle = "3.0.2"
 googleServices = "4.4.2"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -26,6 +27,7 @@ androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-lived
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
