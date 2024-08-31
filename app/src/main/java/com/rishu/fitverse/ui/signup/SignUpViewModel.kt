@@ -16,6 +16,8 @@ class SignUpViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    private val validEmailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+
     var email by mutableStateOf("")
         private set
 
@@ -40,10 +42,10 @@ class SignUpViewModel @Inject constructor(
         this.username = username
     }
 
-    private fun verifyUserInput(): Boolean {
-        val regex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
-        return email.matches(Regex(regex)) && password.isNotEmpty() && username.isNotEmpty()
-    }
+    private fun verifyUserInput(): Boolean =
+        email.matches(validEmailRegex)
+                && password.isNotEmpty()
+                && username.isNotEmpty()
 
     fun onSignUpButtonPressed() = viewModelScope.launch {
         if (verifyUserInput()) {
