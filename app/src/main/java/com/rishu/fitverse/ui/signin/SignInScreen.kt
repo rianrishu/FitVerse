@@ -1,4 +1,4 @@
-package com.rishu.fitverse.ui.signup
+package com.rishu.fitverse.ui.signin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,7 +41,7 @@ import com.rishu.fitverse.R
 
 @Preview
 @Composable
-fun SignUpScreen() {
+fun SignInScreen() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,9 +74,10 @@ fun SignUpScreen() {
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = stringResource(id = R.string.let_s_create_your_account),
+                text = stringResource(id = R.string.sign_in_head),
                 style = MaterialTheme.typography.headlineSmall,
                 color = colorResource(id = R.color.black),
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(
                     dimensionResource(R.dimen.padding_normal),
                     dimensionResource(R.dimen.auth_bg_corner_radius),
@@ -86,42 +87,10 @@ fun SignUpScreen() {
             )
 
             Text(
-                text = stringResource(id = R.string.registerSubHead),
+                text = stringResource(id = R.string.sign_in_subhead),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.gray4),
-                textAlign = TextAlign.Center,
-            )
-
-            TextField(
-                value = stringResource(id = R.string.username_label),
-                onValueChange = {},
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Leading Icon",
-                        tint = colorResource(id = R.color.authTextFieldIconTint),
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.input_icon_size))
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = dimensionResource(R.dimen.bar_width),
-                        end = dimensionResource(R.dimen.bar_width),
-                        bottom = dimensionResource(R.dimen.size0dp),
-                        top = dimensionResource(R.dimen.auth_bg_corner_radius)
-                    )
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = dimensionResource(id = R.dimen.auth_bg_corner_radius),
-                            topEnd = dimensionResource(id = R.dimen.auth_bg_corner_radius),
-                            bottomStart = dimensionResource(id = R.dimen.auth_bg_corner_radius),
-                            bottomEnd = dimensionResource(R.dimen.auth_bg_corner_radius)
-                        )
-                    )
-                    .background(colorResource(id = R.color.gray2))
+                textAlign = TextAlign.Center
             )
 
             TextField(
@@ -140,8 +109,10 @@ fun SignUpScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        horizontal = dimensionResource(R.dimen.bar_width),
-                        vertical = dimensionResource(R.dimen.size10dp)
+                        start = dimensionResource(R.dimen.bar_width),
+                        end = dimensionResource(R.dimen.bar_width),
+                        bottom = dimensionResource(R.dimen.size0dp),
+                        top = dimensionResource(R.dimen.auth_bg_corner_radius)
                     )
                     .clip(
                         RoundedCornerShape(
@@ -173,7 +144,7 @@ fun SignUpScreen() {
                         start = dimensionResource(R.dimen.bar_width),
                         end = dimensionResource(R.dimen.bar_width),
                         bottom = dimensionResource(R.dimen.bar_width),
-                        top = dimensionResource(R.dimen.size0dp)
+                        top = dimensionResource(R.dimen.size10dp)
                     )
                     .clip(
                         RoundedCornerShape(
@@ -201,7 +172,7 @@ fun SignUpScreen() {
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.sign_up_label),
+                    text = stringResource(id = R.string.sign_in_label),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -237,7 +208,7 @@ fun SignUpScreen() {
             }
 
             Text(
-                text = stringResource(id = R.string.signUpSocial),
+                text = stringResource(id = R.string.signInSocial),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.gray4),
                 modifier = Modifier.padding(
@@ -273,7 +244,7 @@ fun SignUpScreen() {
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.sign_up_google_label),
+                    text = stringResource(id = R.string.sign_in_google_label),
                     color = colorResource(id = R.color.lt_darkpblue),
                     style = MaterialTheme.typography.labelLarge
                 )
@@ -281,7 +252,7 @@ fun SignUpScreen() {
 
             Row(modifier = Modifier.padding(dimensionResource(id = R.dimen.one_space))) {
                 Text(
-                    text = stringResource(id = R.string.already_have_an_account),
+                    text = stringResource(id = R.string.dont_have_an_account),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = colorResource(
                             id = R.color.gray4
@@ -290,7 +261,7 @@ fun SignUpScreen() {
                     modifier = Modifier.padding(end = dimensionResource(id = R.dimen.one_space))
                 )
                 Text(
-                    text = stringResource(id = R.string.sign_in_label),
+                    text = stringResource(id = R.string.sign_up_label),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = colorResource(id = R.color.lt_darkpblue)
                     ),

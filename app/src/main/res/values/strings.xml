@@ -20,6 +20,7 @@ and track your productivity </string>
     <string name="sign_in_subhead">Sign in using the email and password you entered during registration</string>
     <string name="sign_in_head">Let\'s sign you in</string>
     <string name="signInSocial">Sign in with your social account</string>
+    <string name="signUpSocial">Sign up with your social account</string>
     <string name="let_s_create_your_account">Let\'s create your account</string>
     <string name="registerSubHead">Create a new account using your email and password</string>
 
@@ -58,5 +59,7 @@ and track your productivity </string>
     <string name="email_label">Email</string>
     <string name="password_label">Password</string>
     <string name="sign_up_google_label">Sign up with Google</string>
-    <string name="already_have_an_account">Already have an account? </string>
+    <string name="sign_in_google_label">Sign in with Google</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="dont_have_an_account">Don\'t have an account yet?</string>
 </resources>
