@@ -1,5 +1,6 @@
 package com.rishu.fitverse.ui.signup
 
+import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,7 +61,8 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun onSignUpWithGooglePressed() = viewModelScope.launch {
-        // Handle Google Sign Up
+    fun onSignUpWithGooglePressed(data: Intent) = viewModelScope.launch {
+        registerState = Resource.Loading()
+        registerState = authRepository.registerUsingGoogle(data = data)
     }
 }

@@ -1,5 +1,10 @@
 package com.rishu.fitverse.ui.signup
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.rishu.fitverse.R
 
 @Preview
@@ -48,6 +54,16 @@ fun SignUpScreen(
     onClickSignIn: () -> Unit = {},
 ) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
+    lateinit var googleSignInClient: GoogleSignInClient
+
+    var googleSignUpLauncher: ActivityResultLauncher<Intent> =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                it.data?.let { it1 -> signUpViewModel.onSignUpWithGooglePressed(it1) }
+            }
+        }
 
     Column(
         modifier = Modifier
@@ -260,7 +276,7 @@ fun SignUpScreen(
             )
 
             Button(
-                onClick = { signUpViewModel.onSignUpWithGooglePressed() },
+                onClick = { googleSignUpLauncher.launch(googleSignInClient.signInIntent) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
