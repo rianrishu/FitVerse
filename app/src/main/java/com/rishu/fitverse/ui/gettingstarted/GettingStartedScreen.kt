@@ -36,7 +36,10 @@ import com.rishu.fitverse.R
 
 @Preview
 @Composable
-fun GettingStartedScreen() {
+fun GettingStartedScreen(
+    onClickSignIn: () -> Unit = {},
+    onClickSignUp: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +129,7 @@ fun GettingStartedScreen() {
                     )
             ) {
                 Button(
-                    onClick = { /* TODO: Sign in action */ },
+                    onClick = onClickSignIn,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
@@ -140,7 +143,7 @@ fun GettingStartedScreen() {
                     )
                 }
                 Button(
-                    onClick = { /* TODO: Sign up action */ },
+                    onClick = onClickSignUp,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
