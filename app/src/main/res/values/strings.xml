@@ -54,4 +54,9 @@ and track your productivity </string>
     <string name="welcome_to_label">Welcome to</string>
     <string name="sign_in_label">Sign in</string>
     <string name="sign_up_label">Sign up</string>
+    <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="sign_up_google_label">Sign up with Google</string>
+    <string name="already_have_an_account">Already have an account? </string>
 </resources>
