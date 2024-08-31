@@ -43,7 +43,9 @@ import com.rishu.fitverse.R
 
 @Preview
 @Composable
-fun SignInScreen() {
+fun SignInScreen(
+    onClickSignUp: () -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -268,7 +270,9 @@ fun SignInScreen() {
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = colorResource(id = R.color.lt_darkpblue)
                     ),
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable(
+                        onClick = onClickSignUp
+                    )
                 )
             }
         }

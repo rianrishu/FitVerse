@@ -32,11 +32,19 @@ fun FitVerseNavHost(
         }
 
         composable(route = SignIn.route) {
-            SignInScreen()
+            SignInScreen(
+                onClickSignUp = {
+                    navController.navigateSingleTopTo(SignUp.route)
+                }
+            )
         }
 
         composable(route = SignUp.route) {
-            SignUpScreen()
+            SignUpScreen(
+                onClickSignIn = {
+                    navController.navigateSingleTopTo(SignIn.route)
+                }
+            )
         }
     }
 }

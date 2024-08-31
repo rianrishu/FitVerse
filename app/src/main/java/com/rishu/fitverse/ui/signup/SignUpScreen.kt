@@ -39,11 +39,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rishu.fitverse.R
 
 @Preview
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    onClickSignIn: () -> Unit = {},
+) {
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,9 +101,10 @@ fun SignUpScreen() {
             )
 
             TextField(
-                value = stringResource(id = R.string.username_label),
-                onValueChange = {},
+                value = signUpViewModel.username,
+                onValueChange = signUpViewModel::onUsernameTextChange,
                 singleLine = true,
+                placeholder = { Text(text = stringResource(id = R.string.username_label)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Person,
@@ -128,9 +134,10 @@ fun SignUpScreen() {
             )
 
             TextField(
-                value = stringResource(id = R.string.email_label),
-                onValueChange = {},
+                value = signUpViewModel.email,
+                onValueChange = signUpViewModel::onEmailTextChange,
                 singleLine = true,
+                placeholder = { Text(text = stringResource(id = R.string.email_label)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -158,9 +165,10 @@ fun SignUpScreen() {
             )
 
             TextField(
-                value = stringResource(id = R.string.password_label),
-                onValueChange = {},
+                value = signUpViewModel.password,
+                onValueChange = signUpViewModel::onPasswordTextChange,
                 singleLine = true,
+                placeholder = { Text(text = stringResource(id = R.string.password_label)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Lock,
@@ -190,7 +198,7 @@ fun SignUpScreen() {
             )
 
             Button(
-                onClick = { /* TODO: Sign in action */ },
+                onClick = { signUpViewModel.onSignUpButtonPressed() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -252,7 +260,7 @@ fun SignUpScreen() {
             )
 
             Button(
-                onClick = { /* TODO: Sign up action */ },
+                onClick = { signUpViewModel.onSignUpWithGooglePressed() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -297,7 +305,9 @@ fun SignUpScreen() {
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = colorResource(id = R.color.lt_darkpblue)
                     ),
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable(
+                        onClick = onClickSignIn
+                    )
                 )
             }
         }
