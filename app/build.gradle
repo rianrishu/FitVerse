@@ -115,5 +115,13 @@ dependencies {
     //Google Play Services
     implementation libs.play.services.auth
 
+    //Room Database
+    def room_version = "2.4.3"
+    implementation libs.androidx.room.runtime
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation libs.androidx.room.ktx
 
+    //Loader
+    implementation libs.lottie.compose
 }

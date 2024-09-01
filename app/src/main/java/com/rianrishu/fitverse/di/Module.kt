@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.Room
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -11,6 +12,8 @@ import com.rianrishu.fitverse.BuildConfig
 import com.rianrishu.fitverse.data.api.local.datasource.DataStorePreferencesDataSource
 import com.rianrishu.fitverse.data.api.local.datasource.PreferencesDataSource
 import com.rianrishu.fitverse.data.api.local.datasource.SharedPreferencesDataSource
+import com.rianrishu.fitverse.data.api.local.room.FitVerseDatabase
+import com.rianrishu.fitverse.data.api.local.room.UserDAO
 import com.rianrishu.fitverse.data.api.remote.harperdb.Api
 import com.rianrishu.fitverse.data.api.remote.harperdb.AuthInterceptor
 import com.rianrishu.fitverse.data.model.mapper.UserMapper
@@ -110,4 +113,17 @@ object Module {
 
     @Provides
     fun providesContext(@ApplicationContext context: Context): Context = context
+
+    @Provides
+    @Singleton
+    fun providesFitVerseDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(
+            context, FitVerseDatabase::class.java, "FitVerseDatabase"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesUserDao(fitVerseDatabase: FitVerseDatabase): UserDAO = fitVerseDatabase.getUserDao()
 }

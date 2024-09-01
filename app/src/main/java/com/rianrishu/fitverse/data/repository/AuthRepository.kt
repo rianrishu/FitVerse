@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.rianrishu.fitverse.data.api.local.datasource.PreferencesDataSource
 import com.rianrishu.fitverse.data.api.remote.datasource.FirebaseAuthDataSource
-import com.rianrishu.fitverse.data.api.remote.datasource.HarperDbAuthDataSource
 import com.rianrishu.fitverse.data.model.mapper.UserMapper
 import com.rianrishu.fitverse.data.model.remote.UserDTO
 import com.rianrishu.fitverse.utils.ErrorType
@@ -18,7 +17,7 @@ import javax.inject.Named
 
 class AuthRepository @Inject constructor(
     private val authDataSource: FirebaseAuthDataSource,
-    private val harperDbAuthDataSource: HarperDbAuthDataSource,
+    private val userRepository: UserRepository,
     @Named("sharedPref") private val preferencesDataSource: PreferencesDataSource,
     private val userMapper: UserMapper,
     private val networkUtils: NetworkUtils
@@ -57,13 +56,6 @@ class AuthRepository @Inject constructor(
             val userDTO = resource.data?.let {
                 getUserDTOFromFirebaseUser(it)
             } ?: UserDTO()
-            val harperResource = harperDbAuthDataSource.storeUserIntoDb(userDTO)
-            if (harperResource is Resource.Error) {
-                return@withContext Resource.Error(
-                    message = harperResource.message,
-                    errorType = ErrorType.UNKNOWN
-                )
-            }
             return@withContext storeUserDataAfterRegister(resource, userDTO)
         }
 
@@ -77,25 +69,20 @@ class AuthRepository @Inject constructor(
         resource: Resource<T>,
         userDTO: UserDTO
     ): Resource<Unit> {
-        val harperResource = harperDbAuthDataSource.storeUserIntoDb(userDTO)
-        if (harperResource is Resource.Error || resource is Resource.Error) {
-            if (harperResource is Resource.Error && resource is Resource.Success) {
-                removeUser()
-            }
-            return Resource.Error(message = resource.message, errorType = ErrorType.UNKNOWN)
-        }
+        userRepository.addUser(userMapper.toDomainModel(userDTO))
         preferencesDataSource.saveUserData(userMapper.toDomainModel(userDTO))
-        return Resource.Success(message = "User registered successfully")
+        return Resource.Success(message = resource.message)
     }
 
     suspend fun logoutUser() {
         authDataSource.logoutUser()
+        userRepository.deleteUser()
         preferencesDataSource.removeUserData()
     }
 
     private suspend fun removeUser() {
         authDataSource.removeUser()
+        userRepository.deleteUser()
         preferencesDataSource.removeUserData()
     }
-
 }
