@@ -14,7 +14,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.rishu.fitverse"
+        applicationId "com.rianrishu.fitverse"
         minSdk 24
         targetSdk 34
         versionCode 1

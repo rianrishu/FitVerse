@@ -9,10 +9,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:1044020899047:android:afb7f409a6d417cdce4642",
         "android_client_info": {
-          "package_name": "com.rishu.fitverse"
+          "package_name": "com.rianrishu.fitverse"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1044020899047-suurti6bpp3th9a07ns13mipa2avbsja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rianrishu.fitverse",
+            "certificate_hash": "02bcd5f6f5e20ddd71ec306333e8e3fdb5e15690"
+          }
+        },
         {
           "client_id": "1044020899047-dhldgrkorf69l6b7o3hcsndhmj22du0v.apps.googleusercontent.com",
           "client_type": 3

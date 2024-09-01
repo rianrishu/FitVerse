@@ -2,6 +2,7 @@ package com.rishu.fitverse.ui.signup
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,11 +34,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,8 +49,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.rishu.fitverse.R
+import com.rishu.fitverse.utils.ErrorType
+import com.rishu.fitverse.utils.Resource
 
 @Preview
 @Composable
@@ -54,7 +62,18 @@ fun SignUpScreen(
     onClickSignIn: () -> Unit = {},
 ) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
-    lateinit var googleSignInClient: GoogleSignInClient
+    var registerState = signUpViewModel.registerState
+    val context = LocalContext.current
+
+    var googleSignInClient: GoogleSignInClient = remember {
+        GoogleSignIn.getClient(
+            context,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+        )
+    }
 
     var googleSignUpLauncher: ActivityResultLauncher<Intent> =
         rememberLauncherForActivityResult(
@@ -64,6 +83,24 @@ fun SignUpScreen(
                 it.data?.let { it1 -> signUpViewModel.onSignUpWithGooglePressed(it1) }
             }
         }
+
+
+    LaunchedEffect(key1 = signUpViewModel.registerState) {
+        when (registerState) {
+            is Resource.Empty -> Unit
+            is Resource.Loading -> {
+                Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+            }
+
+            is Resource.Error -> {
+                Toast.makeText(context, registerState.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is Resource.Success -> {
+                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
