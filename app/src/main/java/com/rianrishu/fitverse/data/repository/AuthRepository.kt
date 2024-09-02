@@ -74,6 +74,47 @@ class AuthRepository @Inject constructor(
         return Resource.Success(message = resource.message)
     }
 
+    suspend fun loginUser(email: String, password: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            if (!networkUtils.checkInternetConnection())
+                return@withContext Resource.Error(
+                    message = "No internet",
+                    errorType = ErrorType.NO_INTERNET
+                )
+            val resource = authDataSource.loginUser(email, password)
+            return@withContext getUserDataAfterLogin(resource, email)
+        }
+
+    suspend fun loginUsingGoogle(data: Intent): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            if (!networkUtils.checkInternetConnection())
+                return@withContext Resource.Error(
+                    message = "No internet",
+                    errorType = ErrorType.NO_INTERNET
+                )
+            val account = authDataSource.getGoogleAccount(data)
+            if (account is Resource.Error)
+                return@withContext Resource.Error("Failed to sign in using Google")
+            val credential = GoogleAuthProvider.getCredential(account.data?.idToken, null)
+            val resource = authDataSource.signInUsingCredential(credential)
+            return@withContext getUserDataAfterLogin(resource, resource.data!!.email!!)
+        }
+
+    private suspend fun <T> getUserDataAfterLogin(
+        authResource: Resource<T>,
+        email: String
+    ): Resource<Unit> {
+        val dbResource = userRepository.getUser(email)
+        if (authResource is Resource.Error || dbResource is Resource.Error) {
+            if (authResource is Resource.Success && dbResource is Resource.Error) {
+                removeUser()
+                return Resource.Error(message = "User not found! Please Sign Up")
+            }
+            return Resource.Error(message = authResource.message)
+        }
+        return Resource.Success(message = authResource.message)
+    }
+
     suspend fun logoutUser() {
         authDataSource.logoutUser()
         userRepository.deleteUser()

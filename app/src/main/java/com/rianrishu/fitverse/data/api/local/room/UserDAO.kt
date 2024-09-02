@@ -9,6 +9,9 @@ import com.rianrishu.fitverse.data.model.entity.UserEntity
 
 @Dao
 interface UserDAO {
+    @Query("SELECT * FROM user_table WHERE email = :email")
+    suspend fun getUser(email: String): UserEntity?
+
     @Insert
     suspend fun insertUser(userEntity: UserEntity)
 

@@ -7,6 +7,8 @@ import javax.inject.Inject
 class UserDataSource @Inject constructor(
     private val userDAO: UserDAO
 ) {
+    suspend fun getUser(email: String) = userDAO.getUser(email)
+
     suspend fun insertUser(userEntity: UserEntity) = userDAO.insertUser(userEntity)
 
     suspend fun updateUser(userEntity: UserEntity) = userDAO.updateUser(userEntity)
