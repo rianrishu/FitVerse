@@ -28,6 +28,14 @@ class SignInViewModel @Inject constructor(
     var registerState: Resource<Unit> by mutableStateOf(Resource.Empty())
         private set
 
+    fun onEmailTextChange(email: String) {
+        this.email = email
+    }
+
+    fun onPasswordTextChange(password: String) {
+        this.password = password
+    }
+
     private fun verifyUserInput(): Boolean =
         email.matches(validEmailRegex)
                 && password.isNotEmpty()

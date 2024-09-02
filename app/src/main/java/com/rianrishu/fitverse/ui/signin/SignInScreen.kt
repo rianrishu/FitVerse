@@ -1,5 +1,11 @@
 package com.rianrishu.fitverse.ui.signin
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,24 +33,73 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.rianrishu.fitverse.R
+import com.rianrishu.fitverse.ui.common.ScreenLoader
+import com.rianrishu.fitverse.utils.Resource
 
 @Preview
 @Composable
 fun SignInScreen(
     onClickSignUp: () -> Unit = {},
 ) {
+    val signInViewModel: SignInViewModel = hiltViewModel()
+    val registerState = signInViewModel.registerState
+    val context = LocalContext.current
+
+    val googleSignInClient: GoogleSignInClient = remember {
+        GoogleSignIn.getClient(
+            context,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+        )
+    }
+
+    val googleSignInLauncher: ActivityResultLauncher<Intent> =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                it.data?.let { it1 -> signInViewModel.onSignInWithGooglePressed(it1) }
+            }
+        }
+
+    LaunchedEffect(key1 = signInViewModel.registerState) {
+        when (registerState) {
+            is Resource.Empty -> Unit
+            is Resource.Loading -> {
+                Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+            }
+
+            is Resource.Error -> {
+                Toast.makeText(context, registerState.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is Resource.Success -> {
+                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,9 +153,10 @@ fun SignInScreen(
             )
 
             TextField(
-                value = stringResource(id = R.string.email_label),
-                onValueChange = {},
+                value = signInViewModel.email,
+                onValueChange = signInViewModel::onEmailTextChange,
                 singleLine = true,
+                placeholder = { Text(text = stringResource(id = R.string.email_label)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -130,9 +186,10 @@ fun SignInScreen(
             )
 
             TextField(
-                value = stringResource(id = R.string.password_label),
-                onValueChange = {},
+                value = signInViewModel.password,
+                onValueChange = signInViewModel::onPasswordTextChange,
                 singleLine = true,
+                placeholder = { Text(text = stringResource(id = R.string.password_label)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Lock,
@@ -162,7 +219,7 @@ fun SignInScreen(
             )
 
             Button(
-                onClick = { /* TODO: Sign in action */ },
+                onClick = { signInViewModel.onSignInButtonPressed() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -224,7 +281,7 @@ fun SignInScreen(
             )
 
             Button(
-                onClick = { /* TODO: Sign up action */ },
+                onClick = { googleSignInLauncher.launch(googleSignInClient.signInIntent) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -276,4 +333,8 @@ fun SignInScreen(
             }
         }
     }
+
+    ScreenLoader(
+        visible = registerState is Resource.Loading
+    )
 }
