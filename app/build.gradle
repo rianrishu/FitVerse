@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.rianrishu.fitverse"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -124,4 +124,7 @@ dependencies {
 
     //Loader
     implementation libs.lottie.compose
+
+    //Health Connect SDK
+    implementation(libs.androidx.connect.client)
 }
