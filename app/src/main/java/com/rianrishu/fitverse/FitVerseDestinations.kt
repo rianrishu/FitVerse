@@ -15,3 +15,7 @@ object SignIn: FitVerseDestination {
 object SignUp: FitVerseDestination {
     override val route = "sign_up"
 }
+
+object HomeScreen: FitVerseDestination {
+    override val route = "home_screen"
+}

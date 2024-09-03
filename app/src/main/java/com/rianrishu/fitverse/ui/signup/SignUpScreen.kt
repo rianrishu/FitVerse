@@ -64,6 +64,7 @@ import com.rianrishu.fitverse.utils.Resource
 @Composable
 fun SignUpScreen(
     onClickSignIn: () -> Unit = {},
+    onSuccessfulSignUp: () -> Unit = {}
 ) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     val registerState = signUpViewModel.registerState
@@ -92,16 +93,14 @@ fun SignUpScreen(
     LaunchedEffect(key1 = signUpViewModel.registerState) {
         when (registerState) {
             is Resource.Empty -> Unit
-            is Resource.Loading -> {
-                Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-            }
+            is Resource.Loading -> {}
 
             is Resource.Error -> {
                 Toast.makeText(context, registerState.message, Toast.LENGTH_SHORT).show()
             }
 
             is Resource.Success -> {
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                onSuccessfulSignUp()
             }
         }
     }

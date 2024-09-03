@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rianrishu.fitverse.ui.gettingstarted.GettingStartedScreen
+import com.rianrishu.fitverse.ui.homescreen.landing.HomeScreen
 import com.rianrishu.fitverse.ui.signin.SignInScreen
 import com.rianrishu.fitverse.ui.signup.SignUpScreen
 
@@ -35,6 +36,9 @@ fun FitVerseNavHost(
             SignInScreen(
                 onClickSignUp = {
                     navController.navigateSingleTopTo(SignUp.route)
+                },
+                onSuccessfulSignIn = {
+                    navController.navigateSingleTopTo(HomeScreen.route)
                 }
             )
         }
@@ -43,8 +47,15 @@ fun FitVerseNavHost(
             SignUpScreen(
                 onClickSignIn = {
                     navController.navigateSingleTopTo(SignIn.route)
+                },
+                onSuccessfulSignUp = {
+                    navController.navigateSingleTopTo(SignIn.route)
                 }
             )
+        }
+
+        composable(route = HomeScreen.route) {
+            HomeScreen()
         }
     }
 }
