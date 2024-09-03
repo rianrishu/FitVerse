@@ -16,7 +16,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.rianrishu.fitverse.R
 import com.rianrishu.fitverse.utils.CustomDrawerState
 import com.rianrishu.fitverse.utils.opposite
 
@@ -35,7 +37,7 @@ fun HomeContentScreen(
             },
         topBar = {
             TopAppBar(
-                title = { Text(text = "Home") },
+                title = { Text(text = stringResource(id = R.string.app_name)) },
                 navigationIcon = {
                     IconButton(onClick = { onDrawerClick(drawerState.opposite()) }) {
                         Icon(

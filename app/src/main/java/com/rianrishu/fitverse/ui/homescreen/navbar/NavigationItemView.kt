@@ -17,11 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rianrishu.fitverse.R
 import com.rianrishu.fitverse.utils.NavigationItem
 
 @Preview
@@ -35,7 +37,7 @@ fun NavigationItemView(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(size = 99.dp))
-            .clickable { }
+            .clickable { onClick() }
             .background(
                 color = if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
                 else Color.Unspecified,
@@ -47,13 +49,13 @@ fun NavigationItemView(
         Icon(
             imageVector = navigationItem.icon,
             contentDescription = "Navigation Item Icon",
-            tint = if (selected) MaterialTheme.colorScheme.primary
+            tint = if (selected) colorResource(id = R.color.lt_darkpblue)
             else MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = navigationItem.title,
-            color = if (selected) MaterialTheme.colorScheme.primary
+            color = if (selected) colorResource(id = R.color.lt_darkpblue)
             else MaterialTheme.colorScheme.onSurface,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
             lineHeight = 20.sp

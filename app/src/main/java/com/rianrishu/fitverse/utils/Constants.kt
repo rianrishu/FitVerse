@@ -3,6 +3,7 @@ package com.rianrishu.fitverse.utils
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.rianrishu.fitverse.R
@@ -23,6 +24,10 @@ enum class NavigationItem(
     Profile(
         icon = Icons.Default.Person,
         title = "Profile"
+    ),
+    Browse(
+        icon = Icons.Default.PlayArrow,
+        title = "Browse"
     ),
     Settings(
         icon = Icons.Default.Settings,
