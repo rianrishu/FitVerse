@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rianrishu.fitverse.data.model.BasicActivity
 import com.rianrishu.fitverse.ui.homescreen.navbar.CustomDrawer
 import com.rianrishu.fitverse.utils.CustomDrawerState
 import com.rianrishu.fitverse.utils.NavigationItem
@@ -32,7 +33,9 @@ import kotlin.math.roundToInt
 
 @Preview
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    userActivities: List<BasicActivity> = remember { arrayListOf() }
+) {
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
     var selectedNavigationItem by remember { mutableStateOf(NavigationItem.Home) }
 
@@ -80,6 +83,7 @@ fun HomeScreen() {
                     alpha = 0.1f,
                     shadowRadius = 50.dp
                 ),
+            userActivities = userActivities,
             drawerState = drawerState,
             onDrawerClick = { drawerState = it },
         )

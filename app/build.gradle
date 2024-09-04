@@ -28,6 +28,7 @@ android {
         buildConfigField("String", "USERNAME", username)
         buildConfigField("String", "PASSWORD", password)
         buildConfigField("String", "BASE_URL", base_url)
+        buildConfigField("String", "HEALTH_CONNECT_PLAY_STORE_URL", "\"market://details?id=com.google.android.apps.healthdata&url=healthconnect%3A%2F%2Fonboarding\"")
     }
 
     signingConfigs{

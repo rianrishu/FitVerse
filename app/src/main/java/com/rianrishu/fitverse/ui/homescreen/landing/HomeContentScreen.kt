@@ -1,17 +1,24 @@
 package com.rianrishu.fitverse.ui.homescreen.landing
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,23 +35,33 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
+import com.rianrishu.fitverse.BuildConfig
 import com.rianrishu.fitverse.R
+import com.rianrishu.fitverse.data.model.BasicActivity
+import com.rianrishu.fitverse.data.model.DataRecord
+import com.rianrishu.fitverse.data.model.DataType
+import com.rianrishu.fitverse.ui.common.BaseAnimatedCircle
+import com.rianrishu.fitverse.ui.common.DetailsCard
 import com.rianrishu.fitverse.utils.CustomDrawerState
 import com.rianrishu.fitverse.utils.HealthConnectUtils
+import com.rianrishu.fitverse.utils.extractProportions
 import com.rianrishu.fitverse.utils.opposite
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContentScreen(
     modifier: Modifier = Modifier,
+    userActivities: List<BasicActivity> = remember { UserActivityData.userActivities },
     drawerState: CustomDrawerState = CustomDrawerState.Closed,
     onDrawerClick: (CustomDrawerState) -> Unit = {}
 ) {
@@ -97,6 +114,7 @@ fun HomeContentScreen(
 
     Scaffold(
         modifier = modifier
+            .fillMaxSize()
             .clickable(enabled = drawerState == CustomDrawerState.Opened) {
                 onDrawerClick(CustomDrawerState.Closed)
             },
@@ -115,8 +133,52 @@ fun HomeContentScreen(
         }
     ) {
         Box(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier
+                .padding(it)
+                .verticalScroll(rememberScrollState())
         ) {
+            val userActivitiesProportion =
+                userActivities.extractProportions { userActivity ->
+                    userActivity.dataRecord.metricValue.toFloat()
+                }
+            val circleColors = userActivities.map { userActivity -> userActivity.color }
+            BaseAnimatedCircle(
+                proportions = userActivitiesProportion,
+                colors = circleColors,
+                Modifier
+                    .height(300.dp)
+                    .align(Alignment.TopCenter)
+                    .padding(dimensionResource(id = R.dimen.padding_normal))
+                    .fillMaxWidth()
+            )
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                Text(
+                    text = "Steps",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Text(
+                    text = "formatAmount(amountsTotal)",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+            Spacer(Modifier.height(10.dp))
+            Card {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    userActivities.forEach { item ->
+                        DetailsCard(
+                            modifier = Modifier,
+                            color = item.color,
+                            metricValue = item.dataRecord.metricValue,
+                            dataType = item.dataRecord.dataType,
+                            toDatetime = item.dataRecord.toDatetime,
+                            fromDatetime = item.dataRecord.fromDatetime
+                        )
+                    }
+                }
+            }
             if (showHealthConnectInstallPopup) {
                 AlertDialog(
                     onDismissRequest = { showHealthConnectInstallPopup = false },
@@ -124,8 +186,7 @@ fun HomeContentScreen(
                         ClickableText(text = AnnotatedString("Install"),
                             onClick = {
                                 showHealthConnectInstallPopup = false
-                                val uriString =
-                                    "market://details?id=com.google.android.apps.healthdata&url=healthconnect%3A%2F%2Fonboarding"
+                                val uriString = BuildConfig.HEALTH_CONNECT_PLAY_STORE_URL
                                 context.startActivity(
                                     Intent(Intent.ACTION_VIEW).apply {
                                         setPackage("com.android.vending")
@@ -146,4 +207,47 @@ fun HomeContentScreen(
             }
         }
     }
+}
+
+
+//Hardcoded values for testing
+object UserActivityData {
+    val userActivities: List<BasicActivity> = listOf(
+        BasicActivity(
+            DataRecord(
+                "6000",
+                DataType.STEPS,
+                "31st January, 2024",
+                "28th February, 2024",
+            ),
+            Color(0xFF36F03F)
+        ),
+        BasicActivity(
+            DataRecord(
+                "200",
+                DataType.MINS,
+                "31st January, 2024",
+                "28th February, 2024",
+            ),
+            Color(0xFFFF78D2)
+        ),
+        BasicActivity(
+            DataRecord(
+                "20",
+                DataType.SLEEP,
+                "31st January, 2024",
+                "28th February, 2024",
+            ),
+            Color(0xFF788EFF)
+        ),
+        BasicActivity(
+            DataRecord(
+                "500",
+                DataType.DISTANCE,
+                "31st January, 2024",
+                "28th February, 2024",
+            ),
+            Color(0xFFFFAC12)
+        )
+    )
 }
