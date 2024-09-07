@@ -1,6 +1,5 @@
 package com.rianrishu.fitverse.ui.common
 
-import android.util.Log
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -22,17 +21,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.rianrishu.fitverse.data.model.SelectedProportion
+import com.rianrishu.fitverse.utils.isAngleInRange
 import kotlin.math.atan2
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 private const val DividerLengthInDegrees = 1.8f
-
-/**
- * A donut chart that animates when loaded.
- */
-private const val TAG = "BaseAnimatedCircle"
 
 @Composable
 fun BaseAnimatedCircle(
@@ -82,22 +77,42 @@ fun BaseAnimatedCircle(
 
     Canvas(modifier = modifier.pointerInput(Unit) {
         detectTapGestures { offset ->
+
+            // Center of the canvas
             val center = size / 2
+
+            // Calculate the distance from the center of the circle to the tap
             val touchRadius =
                 sqrt((offset.x - center.width).pow(2) + (offset.y - center.height).pow(2))
+
+            // Only proceed if the tap is inside the circle
             if (touchRadius <= (min(size.width, size.height) - stroke.width) / 2) {
+
+                // Calculate the angle of the touch (in degrees)
                 val touchAngle = (atan2(
                     offset.y - center.height,
                     offset.x - center.width
-                ) * 180 / Math.PI + 360) % 360
-                var startAngle = shift - 90f
+                ) * 180 / Math.PI + 360) % 360  // Normalize to 0-360 range
+
+                // Initialize the start angle (shift takes care of animation offset)
+                var startAngle = (shift - 90f + 360) % 360 // Normalize startAngle to 0-360
+
                 currentProportions.forEachIndexed { _, proportion ->
+
+                    // Calculate the sweep angle for the current proportion
                     val sweep = proportion.proportion * angleOffset
-                    if (touchAngle in startAngle..(startAngle + sweep)) {
+
+                    // Calculate the end angle
+                    val endAngle = (startAngle + sweep) % 360
+
+                    // Check if the touch angle lies within the start and end angles
+                    if (isAngleInRange(touchAngle, startAngle, endAngle)) {
                         onProportionSelected(proportion)
                         return@detectTapGestures
                     }
-                    startAngle += sweep
+
+                    // Move to the next segment
+                    startAngle = endAngle
                 }
             }
         }

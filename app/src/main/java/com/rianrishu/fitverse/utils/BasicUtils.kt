@@ -21,6 +21,15 @@ fun convertSleepDurationToMinutes(sleepDuration: String): Float {
     }
 }
 
+fun isAngleInRange(touchAngle: Double, startAngle: Float, endAngle: Float): Boolean {
+    return if (startAngle < endAngle) {
+        touchAngle in startAngle..endAngle
+    } else {
+        // Handle wrapping around 0 degrees
+        touchAngle in startAngle..360F || touchAngle in 0F..endAngle
+    }
+}
+
 fun convertMilesToMeters(miles: String): Float {
     return miles.toFloat() * 1609.34f
 }

@@ -4,6 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +32,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -59,6 +65,7 @@ import com.rianrishu.fitverse.utils.convertMilesToMeters
 import com.rianrishu.fitverse.utils.convertSleepDurationToMinutes
 import com.rianrishu.fitverse.utils.extractProportions
 import com.rianrishu.fitverse.utils.opposite
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -104,6 +111,8 @@ fun HomeContentScreen(
         mutableStateOf(SelectedProportion(0f, DataType.STEPS))
     }
 
+    var targetScale by remember { mutableFloatStateOf(0.8f) }
+
     val requestPermissions =
         rememberLauncherForActivityResult(PermissionController.createRequestPermissionResultContract()) { granted ->
             if (granted.containsAll(HealthConnectUtils.PERMISSIONS)) {
@@ -125,7 +134,7 @@ fun HomeContentScreen(
         }
 
     //checking for the Health connect availability in the device
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = true, key2 = selectedProportion) {
         when (HealthConnectUtils.checkForHealthConnectInstalled(context)) {
             HealthConnectClient.SDK_UNAVAILABLE -> {
                 Toast.makeText(
@@ -157,7 +166,16 @@ fun HomeContentScreen(
                 }
             }
         }
+        targetScale = 0.8f
+        delay(500)
+        targetScale = 1f
     }
+
+    // Animate the scale of the text
+    val animatedScale by animateFloatAsState(
+        targetValue = targetScale,
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing), label = ""
+    )
 
     Scaffold(
         modifier = modifier
@@ -214,15 +232,27 @@ fun HomeContentScreen(
                 )
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text(
-                        text = selectedProportion.dataType.toString(),
+                        text = if (selectedProportion.proportion == 0f) {
+                            "Welcome"
+                        } else {
+                            selectedProportion.dataType.toString()
+                        },
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .scale(animatedScale)
                     )
                     Text(
-                        text = selectedProportion.proportion.toString(),
+                        text = if (selectedProportion.proportion == 0f) {
+                            ""
+                        } else {
+                            selectedProportion.proportion.toString() + " %"
+                        },
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .scale(animatedScale)
                     )
                 }
             }
