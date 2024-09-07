@@ -50,6 +50,7 @@ import com.rianrishu.fitverse.R
 import com.rianrishu.fitverse.data.model.BasicActivity
 import com.rianrishu.fitverse.data.model.DataRecord
 import com.rianrishu.fitverse.data.model.DataType
+import com.rianrishu.fitverse.data.model.SelectedProportion
 import com.rianrishu.fitverse.ui.common.BaseAnimatedCircle
 import com.rianrishu.fitverse.ui.common.DetailsCard
 import com.rianrishu.fitverse.utils.CustomDrawerState
@@ -99,6 +100,10 @@ fun HomeContentScreen(
         mutableStateOf(false)
     }
 
+    var selectedProportion by remember {
+        mutableStateOf(SelectedProportion(0f, DataType.STEPS))
+    }
+
     val requestPermissions =
         rememberLauncherForActivityResult(PermissionController.createRequestPermissionResultContract()) { granted ->
             if (granted.containsAll(HealthConnectUtils.PERMISSIONS)) {
@@ -111,7 +116,7 @@ fun HomeContentScreen(
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
                     userActivities =
-                        UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
+                        UserActivityData.accumulateData("500", "700", "9", "8:10")
                 }
             } else {
                 //permissions are rejected, redirect the users to health connect page to give permissions if the permissions page is not appearing
@@ -145,7 +150,7 @@ fun HomeContentScreen(
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
                     userActivities =
-                        UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
+                        UserActivityData.accumulateData("500", "700", "9", "8:10")
                 } else {
                     //asking for permissions from Health Connect since permissions are not given already
                     requestPermissions.launch(HealthConnectUtils.PERMISSIONS)
@@ -192,7 +197,7 @@ fun HomeContentScreen(
                             else ->
                                 userActivity.dataRecord.metricValue.toFloat()
                         }
-                        formattedMetric
+                        SelectedProportion(formattedMetric, userActivity.dataRecord.dataType)
                     }
                 val circleColors = userActivities.map { userActivity -> userActivity.color }
                 BaseAnimatedCircle(
@@ -202,17 +207,20 @@ fun HomeContentScreen(
                         .height(300.dp)
                         .align(Alignment.TopCenter)
                         .padding(dimensionResource(id = R.dimen.padding_normal))
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    onProportionSelected = {
+                        selectedProportion = it
+                    }
                 )
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text(
-                        text = "Steps",
+                        text = selectedProportion.dataType.toString(),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Text(
-                        text = "formatAmount(amountsTotal)",
+                        text = selectedProportion.proportion.toString(),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )

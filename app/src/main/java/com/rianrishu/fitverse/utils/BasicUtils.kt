@@ -1,8 +1,13 @@
 package com.rianrishu.fitverse.utils
 
-fun <E> List<E>.extractProportions(selector: (E) -> Float): List<Float> {
-    val total = this.sumOf { selector(it).toDouble() }
-    return this.map { (selector(it) / total).toFloat() }
+import com.rianrishu.fitverse.data.model.SelectedProportion
+
+fun <E> List<E>.extractProportions(selector: (E) -> SelectedProportion): List<SelectedProportion> {
+    val total = this.sumOf { selector(it).proportion.toDouble() }
+    return this.map {
+        val selected = selector(it)
+        SelectedProportion((selected.proportion / total).toFloat(), selected.dataType)
+    }
 }
 
 fun convertSleepDurationToMinutes(sleepDuration: String): Float {

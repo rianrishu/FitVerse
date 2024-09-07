@@ -14,6 +14,11 @@ data class DataRecord(
     val fromDatetime: String
 )
 
+data class SelectedProportion(
+    val proportion: Float,
+    val dataType: DataType
+)
+
 enum class DataType{
     STEPS,MINS,DISTANCE,SLEEP
 }
