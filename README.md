@@ -4,7 +4,8 @@
 
 # Application Install
 
-***You can Install and test latest FitVerse app from below 👇***
+***You can Install and test latest FitVerse app from below 👇***  
+[Generate APK](https://github.com/rianrishu/FitVerse/actions/workflows/release.yml)
 
 ## Setup
 Clone the repository on your machine. Open the project on your IDE and connect it to firebase and harperDB and everything will be setup
