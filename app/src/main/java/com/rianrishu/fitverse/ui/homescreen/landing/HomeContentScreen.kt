@@ -41,6 +41,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
@@ -57,6 +58,7 @@ import com.rianrishu.fitverse.utils.extractProportions
 import com.rianrishu.fitverse.utils.opposite
 import kotlinx.coroutines.launch
 
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContentScreen(
@@ -67,6 +69,23 @@ fun HomeContentScreen(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val interval: Long = 7
+
+    var steps by remember {
+        mutableStateOf("0")
+    }
+
+    var mins by remember {
+        mutableStateOf("0")
+    }
+
+    var distance by remember {
+        mutableStateOf("0")
+    }
+
+    var sleepDuration by remember {
+        mutableStateOf("00:00")
+    }
 
     var showHealthConnectInstallPopup by remember {
         mutableStateOf(false)
@@ -77,6 +96,12 @@ fun HomeContentScreen(
             if (granted.containsAll(HealthConnectUtils.PERMISSIONS)) {
                 // Permissions successfully granted, continuing with reading the data from health connect
                 scope.launch {
+                    mins = HealthConnectUtils.readMinsForInterval(interval).last().metricValue
+                    steps = HealthConnectUtils.readStepsForInterval(interval).last().metricValue
+                    distance =
+                        HealthConnectUtils.readDistanceForInterval(interval).last().metricValue
+                    sleepDuration =
+                        HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
                 }
             } else {
                 //permissions are rejected, redirect the users to health connect page to give permissions if the permissions page is not appearing
@@ -104,6 +129,11 @@ fun HomeContentScreen(
                 //checking for permissions since health connect is available
                 if (HealthConnectUtils.checkPermissions()) {
                     //permissions are available , so continue performing actions on Health Connect
+                    mins = HealthConnectUtils.readMinsForInterval(interval)[0].metricValue
+                    steps = HealthConnectUtils.readStepsForInterval(interval)[0].metricValue
+                    distance = HealthConnectUtils.readDistanceForInterval(interval)[0].metricValue
+                    sleepDuration =
+                        HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
                 } else {
                     //asking for permissions from Health Connect since permissions are not given already
                     requestPermissions.launch(HealthConnectUtils.PERMISSIONS)
@@ -132,40 +162,46 @@ fun HomeContentScreen(
             )
         }
     ) {
-        Box(
+        Column(
             modifier = modifier
                 .padding(it)
                 .verticalScroll(rememberScrollState())
         ) {
-            val userActivitiesProportion =
-                userActivities.extractProportions { userActivity ->
-                    userActivity.dataRecord.metricValue.toFloat()
+            Box {
+                val userActivitiesProportion =
+                    userActivities.extractProportions { userActivity ->
+                        userActivity.dataRecord.metricValue.toFloat()
+                    }
+                val circleColors = userActivities.map { userActivity -> userActivity.color }
+                BaseAnimatedCircle(
+                    proportions = userActivitiesProportion,
+                    colors = circleColors,
+                    Modifier
+                        .height(300.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(dimensionResource(id = R.dimen.padding_normal))
+                        .fillMaxWidth()
+                )
+                Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text(
+                        text = "Steps",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = "formatAmount(amountsTotal)",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
-            val circleColors = userActivities.map { userActivity -> userActivity.color }
-            BaseAnimatedCircle(
-                proportions = userActivitiesProportion,
-                colors = circleColors,
-                Modifier
-                    .height(300.dp)
-                    .align(Alignment.TopCenter)
-                    .padding(dimensionResource(id = R.dimen.padding_normal))
-                    .fillMaxWidth()
-            )
-            Column(modifier = Modifier.align(Alignment.Center)) {
-                Text(
-                    text = "Steps",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = "formatAmount(amountsTotal)",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
             }
             Spacer(Modifier.height(10.dp))
-            Card {
+            Card(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth()
+            ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     userActivities.forEach { item ->
                         DetailsCard(
@@ -212,6 +248,7 @@ fun HomeContentScreen(
 
 //Hardcoded values for testing
 object UserActivityData {
+
     val userActivities: List<BasicActivity> = listOf(
         BasicActivity(
             DataRecord(
