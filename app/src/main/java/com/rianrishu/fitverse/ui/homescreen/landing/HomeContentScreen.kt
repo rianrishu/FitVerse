@@ -54,6 +54,8 @@ import com.rianrishu.fitverse.ui.common.BaseAnimatedCircle
 import com.rianrishu.fitverse.ui.common.DetailsCard
 import com.rianrishu.fitverse.utils.CustomDrawerState
 import com.rianrishu.fitverse.utils.HealthConnectUtils
+import com.rianrishu.fitverse.utils.convertMilesToMeters
+import com.rianrishu.fitverse.utils.convertSleepDurationToMinutes
 import com.rianrishu.fitverse.utils.extractProportions
 import com.rianrishu.fitverse.utils.opposite
 import kotlinx.coroutines.launch
@@ -108,7 +110,8 @@ fun HomeContentScreen(
                         HealthConnectUtils.readDistanceForInterval(interval).last().metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
-                    userActivities = UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
+                    userActivities =
+                        UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
                 }
             } else {
                 //permissions are rejected, redirect the users to health connect page to give permissions if the permissions page is not appearing
@@ -141,7 +144,8 @@ fun HomeContentScreen(
                     distance = HealthConnectUtils.readDistanceForInterval(interval)[0].metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
-                    userActivities = UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
+                    userActivities =
+                        UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
                 } else {
                     //asking for permissions from Health Connect since permissions are not given already
                     requestPermissions.launch(HealthConnectUtils.PERMISSIONS)
@@ -178,7 +182,17 @@ fun HomeContentScreen(
             Box {
                 val userActivitiesProportion =
                     userActivities.extractProportions { userActivity ->
-                        userActivity.dataRecord.metricValue.toFloat()
+                        val formattedMetric: Float = when (userActivity.dataRecord.dataType) {
+                            DataType.SLEEP ->
+                                convertSleepDurationToMinutes(userActivity.dataRecord.metricValue)
+
+                            DataType.DISTANCE ->
+                                convertMilesToMeters(userActivity.dataRecord.metricValue)
+
+                            else ->
+                                userActivity.dataRecord.metricValue.toFloat()
+                        }
+                        formattedMetric
                     }
                 val circleColors = userActivities.map { userActivity -> userActivity.color }
                 BaseAnimatedCircle(
@@ -264,6 +278,7 @@ object UserActivityData {
         sleepDuration: String
     ): List<BasicActivity> {
         val today = LocalDate.now()
+        val oneWeekBefore = today.minusDays(7)
         val formatter = DateTimeFormatter.ofPattern("d'st' MMMM, yyyy", Locale.ENGLISH)
         return listOf(
             BasicActivity(
@@ -271,7 +286,7 @@ object UserActivityData {
                     steps,
                     DataType.STEPS,
                     today.format(formatter),
-                    "Today",
+                    oneWeekBefore.format(formatter),
                 ),
                 Color(0xFF36F03F)
             ),
@@ -280,7 +295,7 @@ object UserActivityData {
                     mins,
                     DataType.MINS,
                     today.format(formatter),
-                    "Today",
+                    oneWeekBefore.format(formatter),
                 ),
                 Color(0xFFFF78D2)
             ),
@@ -289,7 +304,7 @@ object UserActivityData {
                     sleepDuration,
                     DataType.SLEEP,
                     today.format(formatter),
-                    "Today",
+                    oneWeekBefore.format(formatter),
                 ),
                 Color(0xFF788EFF)
             ),
@@ -298,49 +313,10 @@ object UserActivityData {
                     distance,
                     DataType.DISTANCE,
                     today.format(formatter),
-                    "Today",
+                    oneWeekBefore.format(formatter),
                 ),
                 Color(0xFFFFAC12)
             )
         )
     }
-
-    val userActivities: List<BasicActivity> = listOf(
-        BasicActivity(
-            DataRecord(
-                "6000",
-                DataType.STEPS,
-                "31st January, 2024",
-                "28th February, 2024",
-            ),
-            Color(0xFF36F03F)
-        ),
-        BasicActivity(
-            DataRecord(
-                "200",
-                DataType.MINS,
-                "31st January, 2024",
-                "28th February, 2024",
-            ),
-            Color(0xFFFF78D2)
-        ),
-        BasicActivity(
-            DataRecord(
-                "20",
-                DataType.SLEEP,
-                "31st January, 2024",
-                "28th February, 2024",
-            ),
-            Color(0xFF788EFF)
-        ),
-        BasicActivity(
-            DataRecord(
-                "500",
-                DataType.DISTANCE,
-                "31st January, 2024",
-                "28th February, 2024",
-            ),
-            Color(0xFFFFAC12)
-        )
-    )
 }
