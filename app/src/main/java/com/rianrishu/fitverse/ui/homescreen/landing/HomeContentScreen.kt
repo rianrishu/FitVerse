@@ -57,13 +57,15 @@ import com.rianrishu.fitverse.utils.HealthConnectUtils
 import com.rianrishu.fitverse.utils.extractProportions
 import com.rianrishu.fitverse.utils.opposite
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContentScreen(
     modifier: Modifier = Modifier,
-    userActivities: List<BasicActivity> = remember { UserActivityData.userActivities },
     drawerState: CustomDrawerState = CustomDrawerState.Closed,
     onDrawerClick: (CustomDrawerState) -> Unit = {}
 ) {
@@ -87,6 +89,10 @@ fun HomeContentScreen(
         mutableStateOf("00:00")
     }
 
+    var userActivities: List<BasicActivity> by remember {
+        mutableStateOf(arrayListOf())
+    }
+
     var showHealthConnectInstallPopup by remember {
         mutableStateOf(false)
     }
@@ -102,6 +108,7 @@ fun HomeContentScreen(
                         HealthConnectUtils.readDistanceForInterval(interval).last().metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
+                    userActivities = UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
                 }
             } else {
                 //permissions are rejected, redirect the users to health connect page to give permissions if the permissions page is not appearing
@@ -134,6 +141,7 @@ fun HomeContentScreen(
                     distance = HealthConnectUtils.readDistanceForInterval(interval)[0].metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
+                    userActivities = UserActivityData.accumulateData(mins, steps, distance, sleepDuration)
                 } else {
                     //asking for permissions from Health Connect since permissions are not given already
                     requestPermissions.launch(HealthConnectUtils.PERMISSIONS)
@@ -248,6 +256,54 @@ fun HomeContentScreen(
 
 //Hardcoded values for testing
 object UserActivityData {
+
+    fun accumulateData(
+        mins: String,
+        steps: String,
+        distance: String,
+        sleepDuration: String
+    ): List<BasicActivity> {
+        val today = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("d'st' MMMM, yyyy", Locale.ENGLISH)
+        return listOf(
+            BasicActivity(
+                DataRecord(
+                    steps,
+                    DataType.STEPS,
+                    today.format(formatter),
+                    "Today",
+                ),
+                Color(0xFF36F03F)
+            ),
+            BasicActivity(
+                DataRecord(
+                    mins,
+                    DataType.MINS,
+                    today.format(formatter),
+                    "Today",
+                ),
+                Color(0xFFFF78D2)
+            ),
+            BasicActivity(
+                DataRecord(
+                    sleepDuration,
+                    DataType.SLEEP,
+                    today.format(formatter),
+                    "Today",
+                ),
+                Color(0xFF788EFF)
+            ),
+            BasicActivity(
+                DataRecord(
+                    distance,
+                    DataType.DISTANCE,
+                    today.format(formatter),
+                    "Today",
+                ),
+                Color(0xFFFFAC12)
+            )
+        )
+    }
 
     val userActivities: List<BasicActivity> = listOf(
         BasicActivity(

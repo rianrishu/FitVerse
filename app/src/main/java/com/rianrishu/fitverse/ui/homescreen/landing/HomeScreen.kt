@@ -33,9 +33,7 @@ import kotlin.math.roundToInt
 
 @Preview
 @Composable
-fun HomeScreen(
-    userActivities: List<BasicActivity> = remember { arrayListOf() }
-) {
+fun HomeScreen() {
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
     var selectedNavigationItem by remember { mutableStateOf(NavigationItem.Home) }
 
@@ -83,7 +81,6 @@ fun HomeScreen(
                     alpha = 0.1f,
                     shadowRadius = 50.dp
                 ),
-            userActivities = userActivities,
             drawerState = drawerState,
             onDrawerClick = { drawerState = it },
         )
