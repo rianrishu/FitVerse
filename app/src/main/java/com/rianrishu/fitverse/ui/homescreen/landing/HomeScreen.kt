@@ -1,5 +1,6 @@
 package com.rianrishu.fitverse.ui.homescreen.landing
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -20,10 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rianrishu.fitverse.data.model.BasicActivity
 import com.rianrishu.fitverse.ui.homescreen.navbar.CustomDrawer
 import com.rianrishu.fitverse.utils.CustomDrawerState
 import com.rianrishu.fitverse.utils.NavigationItem
@@ -31,9 +31,9 @@ import com.rianrishu.fitverse.utils.coloredShadow
 import com.rianrishu.fitverse.utils.isOpened
 import kotlin.math.roundToInt
 
-@Preview
 @Composable
 fun HomeScreen() {
+    val context = LocalContext.current
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
     var selectedNavigationItem by remember { mutableStateOf(NavigationItem.Home) }
 
@@ -66,9 +66,13 @@ fun HomeScreen() {
             .fillMaxSize()
     ) {
         CustomDrawer(
-            selectedNavigationItem = selectedNavigationItem,
+            selectedNavigationItem = NavigationItem.Home,
             onNavigationItemClick = {
-                selectedNavigationItem = it
+                Toast.makeText(
+                    context,
+                    "$it Coming soon",
+                    Toast.LENGTH_SHORT
+                ).show()
             },
             onCloseClick = { drawerState = CustomDrawerState.Closed }
         )

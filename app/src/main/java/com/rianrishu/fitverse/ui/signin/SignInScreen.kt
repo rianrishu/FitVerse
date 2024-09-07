@@ -46,7 +46,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -55,7 +54,6 @@ import com.rianrishu.fitverse.R
 import com.rianrishu.fitverse.ui.common.ScreenLoader
 import com.rianrishu.fitverse.utils.Resource
 
-@Preview
 @Composable
 fun SignInScreen(
     onClickSignUp: () -> Unit = {},
