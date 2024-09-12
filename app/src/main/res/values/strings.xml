@@ -65,4 +65,12 @@ and track your productivity </string>
     <string name="profile_label">Profile</string>
     <string name="profile_heading_text">Set your activity goals for a week</string>
     <string name="steps_label">Steps</string>
+    <string name="distance_label">Distance</string>
+    <string name="active_mins_label">Active Minutes</string>
+    <string name="sleep_hours_label">Sleep Hours</string>
+    <string name="about_you_label">About you</string>
+    <string name="gender_label">Gender</string>
+    <string name="birthday_label">Birthday</string>
+    <string name="weight_label">Weight</string>
+    <string name="height_label">height</string>
 </resources>
