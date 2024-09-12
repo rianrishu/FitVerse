@@ -62,4 +62,7 @@ and track your productivity </string>
     <string name="sign_in_google_label">Sign in with Google</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="dont_have_an_account">Don\'t have an account yet?</string>
+    <string name="profile_label">Profile</string>
+    <string name="profile_heading_text">Set your activity goals for a week</string>
+    <string name="steps_label">Steps</string>
 </resources>

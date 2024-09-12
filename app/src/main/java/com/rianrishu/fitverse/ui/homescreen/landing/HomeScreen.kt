@@ -66,27 +66,31 @@ fun HomeScreen() {
             .fillMaxSize()
     ) {
         CustomDrawer(
-            selectedNavigationItem = NavigationItem.Home,
+            selectedNavigationItem = selectedNavigationItem,
             onNavigationItemClick = {
-                Toast.makeText(
-                    context,
-                    "$it Coming soon",
-                    Toast.LENGTH_SHORT
-                ).show()
+                selectedNavigationItem = it
             },
             onCloseClick = { drawerState = CustomDrawerState.Closed }
         )
-        HomeContentScreen(
-            modifier = Modifier
-                .offset(x = animatedOffset)
-                .scale(scale = animatedScale)
-                .coloredShadow(
-                    color = Color.Black,
-                    alpha = 0.1f,
-                    shadowRadius = 50.dp
-                ),
-            drawerState = drawerState,
-            onDrawerClick = { drawerState = it },
-        )
+        if (selectedNavigationItem == NavigationItem.Home) {
+            HomeContentScreen(
+                modifier = Modifier
+                    .offset(x = animatedOffset)
+                    .scale(scale = animatedScale)
+                    .coloredShadow(
+                        color = Color.Black,
+                        alpha = 0.1f,
+                        shadowRadius = 50.dp
+                    ),
+                drawerState = drawerState,
+                onDrawerClick = { drawerState = it },
+            )
+        } else if (selectedNavigationItem == NavigationItem.Profile) {
+            Toast.makeText(
+                context,
+                "Profile Coming soon",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
