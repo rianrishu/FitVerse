@@ -34,6 +34,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.rianrishu.fitverse.R
@@ -83,6 +84,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.steps_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = modifier
                         .padding(
                             start = dimensionResource(id = R.dimen.padding_normal),
@@ -100,6 +102,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.distance_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -120,6 +123,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.active_mins_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = modifier
                         .padding(
                             start = dimensionResource(id = R.dimen.padding_normal),
@@ -137,6 +141,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.sleep_hours_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -200,6 +205,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.weight_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = modifier
                         .padding(
                             start = dimensionResource(id = R.dimen.padding_normal),
@@ -217,6 +223,7 @@ fun ProfileScreen(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(id = R.string.height_label)) },
                     textStyle = TextStyle(textAlign = TextAlign.Center),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
